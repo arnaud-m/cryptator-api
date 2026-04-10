@@ -1,0 +1,64 @@
+#+STARTUP: overview hidestars logdone
+#+COLUMNS: %38ITEM(Details) %7TODO(To Do) %TAGS(Context)
+#+OPTIONS: tags:t timestamp:t todo:t TeX:t LaTeX:t
+#+OPTIONS: @:t ::t |:t ^:t f:t
+#+LANGUAGE: en
+#+TITLE: Cryptator API
+[[https://opensource.org/licenses/BSD-3-Clause][https://img.shields.io/badge/License-BSD%203--Clause-blue.svg]]
+
+Cryptator API is a REST API built on top of the constraint-based cryptarithm solver [[https://github.com/arnaud-m/cryptator/][Cryptator]].\\
+
+[[https://en.wikipedia.org/wiki/Verbal_arithmetic][Cryptarithm]], or alphametic, is a type of mathematical game consisting of a mathematical equation among unknown numbers, whose digits are represented by letters of the alphabet.
+Each letter represents a digit, and the goal is to reconstruct the original arithmetic equation.
+
+* STARTED Download and Installation
+
+  In the following, we distinguish two usages:
+    - as a standalone application: the jar file includes all required dependencies,
+    - as a library: the jar file excludes all dependencies.
+
+** Prerequisites
+  This project works on 32 bits and 64 bits environment and requires:
+
+  - JDK 11+
+  - Maven 3+
+
+** As a library
+
+   The jar file does not contains any dependencies, as of being used as a dependency of another application.
+   The next step is to add the jar file to your classpath of your application and also add the required dependencies.
+
+*** Inside a maven project
+
+    First, you must build from source and install it into your local .m2 repository.
+    : mvn install
+
+    Then, you only have to edit your pom.xml to declare the following library dependency:
+
+ #+BEGIN_EXAMPLE
+ <dependency>
+    <groupId>fr.univ-cotedazur</groupId>
+    <artifactId>cryptator-api</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+ </dependency>
+ #+END_EXAMPLE
+
+
+
+* Contributing
+
+Please read [[CONTRIBUTING.md][CONTRIBUTING.md]] for details on our how you can
+become a contributor and the process for submitting pull requests to us.
+
+* Versioning
+
+This project makes use of [[http://semver.org/][SemVer]] for versioning.
+A list of existing versions can be found in the [[https://github.com/arnaud-m/cryptator-api/releases][project's releases]].
+
+* Authors
+
+See [[AUTHORS][AUTHORS]] and [[CONTRIBUTORS][CONTRIBUTORS]] files.
+
+* License
+
+This project is licensed under the [[https://opensource.org/licenses/BSD-3-Clause/][3-Clause BSD License]] - see the [[LICENSE][LICENSE]] file for details.
