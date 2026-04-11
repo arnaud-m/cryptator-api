@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Cryptator API
+  version: 1.0.0
+  description: REST API for solving and generating cryptarithms with cryptator
+
+components:
+  parameters:
+    BaseParam:
+      name: base
+      in: query
+      description: Numeric base of the positional system
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 2
+        maximum: 36
+
+  schemas:
+    GenerateOptions:
+      type: object
+      properties:
+        min:
+          type: integer
+          default: 3
+          description: Minimum number of words
+          minimum: 3
+        max:
+          type: integer
+          default: -1
+          description: Maximum number of words (max >= min, or max = -1 unlimited)
+        right:
+          type: string
+          enum: [FREE, UNIQUE, FIXED]
+          default: UNIQUE
+          description: Right member type
+    SearchMeasures:
+      type: object
+      properties:
+        timeCount:
+          type: number
+          description: Execution time in seconds
+          example: 0.03
+          minimum:  0
+        nodeCount:
+          type: integer
+          description: Number of tree search nodes
+          example: 4
+          minimum: 0
+    CryptarithmResults:
+      type: object
+      properties:
+        cryptarithms:
+          type: array
+          description: Array of results, one per cryptarithm
+          items:
+            allOf:
+              - type: object
+                properties:
+                  equation:
+                    type: string
+                    description: Cryptarithm equation
+                    example: "SEND + MORE = MONEY"
+                  solutions:
+                    type: array
+                    description: List of solutions
+                    items:
+                      type: object
+                      additionalProperties:
+                          type: integer
+                          minimum: 0
+                          maximum: 35
+                    example:
+                      - S: 9
+                        E: 5
+                        N: 6
+                        D: 7
+                        M: 1
+                        O: 0
+                        R: 8
+                        Y: 2
+              - $ref: '#/components/schemas/SearchMeasures'
+    GenerateResults:
+      type: object
+      allOf:
+          - $ref: '#/components/schemas/CryptarithmResults'
+          - $ref: '#/components/schemas/SearchMeasures'
+          - type:  object
+            properties:
+              candidateCount:
+                type: integer
+                description: "Number of candidate cryptarithms"
+                example: 3
+                minimum: 0
+
+paths:
+  /solve:
+    post:
+      summary: Solve cryptarithms
+      description: |
+        Solves cryptarithms using Cryptator.
+        The base is passed as query parameter.
+        Cryptarithms with optional domains are passed in the request body.
+      parameters:
+         - $ref: '#/components/parameters/BaseParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cryptarithms:
+                  type: array
+                  description: List of cryptarithms to solve, each with optional domains
+                  items:
+                    type: object
+                    properties:
+                      equation:
+                        type: string
+                        description: Cryptarithm equation
+                        example: "SEND + MORE = MONEY"
+                      domains:
+                        type: object
+                        description: Optional integer domains of letters
+                        additionalProperties:
+                          type: string
+                        example:
+                          S: "9"
+                          E: "1-5"
+                        pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
+                    required:
+                      - equation
+
+      responses:
+        '200':
+          description: Results for each cryptarithm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CryptarithmResults'
+        '400':
+          description: Invalid request (e.g., missing cryptarithms)
+        '500':
+          description: Server error
+
+  /generate/words:
+    post:
+      summary: Generate cryptarithms
+      description: Generate cryptarithms from a list of words
+      parameters:
+        - $ref: '#/components/parameters/BaseParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/GenerateOptions'
+                - type: object
+                  required: [words]
+                  properties:
+                    words:
+                      type: array
+                      items:
+                        type: string
+                        pattern: "^[^\\s]+$"
+                      description: List of words to generate cryptarithms.
+                        Each word may contain any characters except spaces.
+                      example: ["SEND", "MORE", "MONEY"]
+                      minItems:  3
+      responses:
+        '200':
+          description: Generated cryptarithms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResults'
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
+
+  /generate/numbers:
+    post:
+      summary: Generate doubly true cryptarithms
+      description: Generate doubly true cryptarithms with written-out numbers
+      parameters:
+        - $ref: '#/components/parameters/BaseParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/GenerateOptions'
+                - type: object
+                  properties:
+                    ctry:
+                      type: string
+                      description: Country code for written-out numbers
+                      example: "EN"
+                      minLength:  2
+                      maxLength: 2
+                    lang:
+                      type: string
+                      description: Language code for written-out number
+                      example: "en"
+                      minLength:  2
+                      maxLength: 2
+                    minsum:
+                      type: integer
+                      description: Minimum sum for doubly true cryptarithms
+                      example: 1
+                      minimum: 1
+                    maxsum:
+                      type: integer
+                      description: Maximum sum for doubly true cryptarithms (maxsum >= minsum)
+                      example: 50
+                      minimum: 1
+      responses:
+        '200':
+          description: Generated doubly true cryptarithms
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/GenerateResults'
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
