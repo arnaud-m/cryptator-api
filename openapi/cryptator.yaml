@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Cryptator API
   version: 1.0.0
-  description: REST API for solving and generating cryptarithms with cryptator
+  description: Cryptator API is a REST API built on top of the constraint-based cryptarithm solver Cryptsator (https://github.com/arnaud-m/cryptator/).
 
 components:
   parameters:
