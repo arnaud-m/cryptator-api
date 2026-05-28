@@ -86,6 +86,11 @@ components:
                         R: 8
                         Y: 2
               - $ref: '#/components/schemas/SearchMeasures'
+              - firstSolutionNodeCount:
+                  type: integer
+                  description: Number of search nodes explored to find the first solution
+                  example: 6
+                  minimum: 0
     GenerateResults:
       type: object
       allOf:
