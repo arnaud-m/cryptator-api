@@ -35,6 +35,11 @@ components:
           enum: [FREE, UNIQUE, FIXED]
           default: UNIQUE
           description: Right member type
+        type:
+          type: string
+          enum: [ADD, MUL]
+          default: ADD
+          description: Operation type used by the generator to build cryptarithms
     SearchMeasures:
       type: object
       properties:
