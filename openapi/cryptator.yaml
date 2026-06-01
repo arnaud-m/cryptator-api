@@ -73,9 +73,9 @@ components:
                     items:
                       type: object
                       additionalProperties:
-                          type: integer
-                          minimum: 0
-                          maximum: 35
+                        type: integer
+                        minimum: 0
+                        maximum: 35
                     example:
                       - S: 9
                         E: 5
@@ -94,15 +94,15 @@ components:
     GenerateResults:
       type: object
       allOf:
-          - $ref: '#/components/schemas/CryptarithmResults'
-          - $ref: '#/components/schemas/SearchMeasures'
-          - type:  object
-            properties:
-              candidateCount:
-                type: integer
-                description: "Number of candidate cryptarithms"
-                example: 3
-                minimum: 0
+        - $ref: '#/components/schemas/CryptarithmResults'
+        - $ref: '#/components/schemas/SearchMeasures'
+        - type:  object
+          properties:
+            candidateCount:
+              type: integer
+              description: "Number of candidate cryptarithms"
+              example: 3
+              minimum: 0
 
 paths:
   /solve:
@@ -113,7 +113,7 @@ paths:
         The base is passed as query parameter.
         Cryptarithms with optional domains are passed in the request body.
       parameters:
-         - $ref: '#/components/parameters/BaseParam'
+        - $ref: '#/components/parameters/BaseParam'
       requestBody:
         required: true
         content:
@@ -130,19 +130,33 @@ paths:
                       equation:
                         type: string
                         description: Cryptarithm equation
-                        example: "SEND + MORE = MONEY"
                       domains:
                         type: object
                         description: Optional integer domains of letters
                         additionalProperties:
                           type: string
-                        example:
-                          S: "9"
-                          E: "1-5"
                         pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
                     required:
                       - equation
-
+            examples:
+              noSoluce:
+                summary: NULL = NO + SOLUTION
+                value:
+                  cryptarithms:
+                    - equation: "NULL=NO+SOLUTION"
+              sendMoreMoney:
+                summary: SEND + MORE = MONEY
+                value:
+                  cryptarithms:
+                    - equation: "SEND + MORE = MONEY"
+                      domains:
+                        S: "9"
+                        E: "1-5"
+              planetes:
+                summary: earth+mars+uranus=saturn
+                value:
+                  cryptarithms:
+                    - equation: "earth+mars+uranus=saturn"
       responses:
         '200':
           description: Results for each cryptarithm
@@ -150,6 +164,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CryptarithmResults'
+              examples:
+                noSoluce:
+                  summary: Result for NULL = NO + SOLUTION
+                  value:
+                    cryptarithms:
+                      - equation: "NULL=NO+SOLUTION"
+                        solutions:
+                        timeCount: 0.08
+                        nodeCount: 0
+                sendMoreMoney:
+                  summary: Result for SEND + MORE = MONEY
+                  value:
+                    cryptarithms:
+                      - equation: "SEND + MORE = MONEY"
+                        solutions:
+                          - S: 9
+                            E: 5
+                            N: 6
+                            D: 7
+                            M: 1
+                            O: 0
+                            R: 8
+                            Y: 2
+                        timeCount: 0.03
+                        nodeCount: 4
+                planetes:
+                  summary: Results for earth+mars+uranus=saturn
+                  value:
+                    cryptarithms:
+                      - equation: "earth+mars+uranus=saturn"
+                        solutions:
+                          - a: 2
+                            e: 7
+                            h: 3
+                            m: 6
+                            n: 1
+                            r: 4
+                            s: 9
+                            t: 0
+                            u: 8
+                          - a: 1
+                            e: 7
+                            h: 0
+                            m: 5
+                            n: 6
+                            r: 4
+                            s: 3
+                            t: 8
+                            u: 2
+                        timeCount: 0.165
+                        nodeCount: 21690
         '400':
           description: Invalid request (e.g., missing cryptarithms)
         '500':
@@ -235,7 +300,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/GenerateResults'
+                $ref: '#/components/schemas/GenerateResults'
         '400':
           description: Invalid request
         '500':
