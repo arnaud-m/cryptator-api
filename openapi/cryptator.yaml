@@ -243,8 +243,38 @@ paths:
                         pattern: "^[^\\s]+$"
                       description: List of words to generate cryptarithms.
                         Each word may contain any characters except spaces.
-                      example: ["SEND", "MORE", "MONEY"]
                       minItems:  3
+            examples:
+              sendMoreMoney:
+                summary: Money
+                value:
+                  min: 3
+                  max: -1
+                  right: "UNIQUE"
+                  type: "ADD"
+                  words: ["SEND", "MORE", "MONEY"]
+              planets:
+                summary: Planets
+                value:
+                  min: 4
+                  max: 5
+                  right: "UNIQUE"
+                  type: "ADD"
+                  words: ["MERCURY", "VENUS", "EARTH", "MARS", "SATURN", "URANUS"]
+              multiplication:
+                summary: Multiplication
+                value:
+                  right: "FREE"
+                  type: "MUL"
+                  words: ["CAT", "DOG", "COW", "PIG", "FISH"]
+              noSoluce:
+                summary: No Solution
+                value:
+                  right: "FREE"
+                  type: "ADD"
+                  words: ["ONE", "TWO", "THREE"]
+
+
       responses:
         '200':
           description: Generated cryptarithms
@@ -252,6 +282,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenerateResults'
+              examples:
+                sendMoreMoney:
+                  summary: Money
+                  value:
+                    cryptarithms:
+                      - equation: "SEND + MORE = MONEY"
+                        solutions:
+                          - S: 9
+                            E: 5
+                            N: 6
+                            D: 7
+                            M: 1
+                            O: 0
+                            R: 8
+                            Y: 2
+                        timeCount: 0.03
+                        nodeCount: 4
+                        firstSolutionNodeCount: 4
+                    timeCount: 0.03
+                    nodeCount: 4
+                    candidateCount: 1
+                planets:
+                  summary: Planets
+                  value:
+                    cryptarithms:
+                      - equation: "VENUS + EARTH + URANUS = SATURN"
+                        solutions:
+                          - A: 2
+                            E: 7
+                            H: 4
+                            N: 0
+                            R: 5
+                            S: 8
+                            T: 1
+                            U: 6
+                            V: 9
+                        timeCount: 0.153
+                        nodeCount: 3244
+                      - equation: "MARS + SATURN + URANUS = MERCURY"
+                        solutions:
+                          - A: 9
+                            C: 6
+                            E: 2
+                            M: 1
+                            N: 0
+                            R: 3
+                            S: 4
+                            T: 5
+                            U: 7
+                            Y: 8
+                        timeCount: 0.043
+                        nodeCount: 408
+                    timeCount: 0.544
+                    nodeCount: 24
+                    candidateCount: 12
+                multiplication:
+                  summary: Multiplication
+                  value:
+                    cryptarithms:
+                      - equation: "PIG * FISH = DOG * COW"
+                        solution:
+                          - C: 4
+                            D: 6
+                            F: 2
+                            G: 5
+                            H: 0
+                            I: 3
+                            O: 7
+                            P: 1
+                            S: 9
+                            W: 8
+                        timeCount: 0.189
+                        nodeCount: 5486
+                      - equation: "COW * FISH = DOG * PIG"
+                        solution:
+                          - C: 1
+                            D: 4
+                            F: 2
+                            G: 9
+                            H: 7
+                            I: 6
+                            O: 5
+                            P: 8
+                            S: 0
+                            W: 3
+                        timeCount: 0.188
+                        nodeCount: 4700
+                    timeCount: 0.405
+                    nodeCount: 48
+                    candidateCount: 6
+                noSoluce:
+                  summary: No Solution
+                  value:
+                    cryptarithms: []
+                    timeCount: 0.010
+                    nodeCount: 0
+                    candidateCount: 0
         '400':
           description: Invalid request
         '500':
