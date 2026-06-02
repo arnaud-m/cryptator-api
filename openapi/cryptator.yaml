@@ -143,7 +143,7 @@ paths:
                 summary: NULL = NO + SOLUTION
                 value:
                   cryptarithms:
-                    - equation: "NULL=NO+SOLUTION"
+                    - equation: "NULL = NO + SOLUTION"
               sendMoreMoney:
                 summary: SEND + MORE = MONEY
                 value:
@@ -152,11 +152,11 @@ paths:
                       domains:
                         S: "9"
                         E: "1-5"
-              planetes:
-                summary: earth+mars+uranus=saturn
+              planets:
+                summary: EARTH + MARS + URANUS = SATURN
                 value:
                   cryptarithms:
-                    - equation: "earth+mars+uranus=saturn"
+                    - equation: "EARTH + MARS + URANUS = SATURN"
       responses:
         '200':
           description: Results for each cryptarithm
@@ -169,8 +169,8 @@ paths:
                   summary: Result for NULL = NO + SOLUTION
                   value:
                     cryptarithms:
-                      - equation: "NULL=NO+SOLUTION"
-                        solutions:
+                      - equation: "NULL = NO + SOLUTION"
+                        solutions: []
                         timeCount: 0.08
                         nodeCount: 0
                 sendMoreMoney:
@@ -189,30 +189,30 @@ paths:
                             Y: 2
                         timeCount: 0.03
                         nodeCount: 4
-                planetes:
-                  summary: Results for earth+mars+uranus=saturn
+                planets:
+                  summary: Results for EARTH + MARS + URANUS = SATURN
                   value:
                     cryptarithms:
-                      - equation: "earth+mars+uranus=saturn"
+                      - equation: "EARTH + MARS + URANUS = SATURN"
                         solutions:
-                          - a: 2
-                            e: 7
-                            h: 3
-                            m: 6
-                            n: 1
-                            r: 4
-                            s: 9
-                            t: 0
-                            u: 8
-                          - a: 1
-                            e: 7
-                            h: 0
-                            m: 5
-                            n: 6
-                            r: 4
-                            s: 3
-                            t: 8
-                            u: 2
+                          - A: 2
+                            E: 7
+                            H: 3
+                            M: 6
+                            N: 1
+                            R: 4
+                            S: 9
+                            T: 0
+                            U: 8
+                          - A: 1
+                            E: 7
+                            H: 0
+                            M: 5
+                            N: 6
+                            R: 4
+                            S: 3
+                            T: 8
+                            U: 2
                         timeCount: 0.165
                         nodeCount: 21690
         '400':
