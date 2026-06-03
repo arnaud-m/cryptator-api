@@ -86,11 +86,13 @@ components:
                         R: 8
                         Y: 2
               - $ref: '#/components/schemas/SearchMeasures'
-              - firstSolutionNodeCount:
-                  type: integer
-                  description: Number of search nodes explored to find the first solution
-                  example: 6
-                  minimum: 0
+              - type: object
+                properties:
+                  firstSolutionNodeCount:
+                    type: integer
+                    description: Number of search nodes explored to find the first solution
+                    example: 6
+                    minimum: 0
     GenerateResults:
       type: object
       allOf:
@@ -342,7 +344,7 @@ paths:
                   value:
                     cryptarithms:
                       - equation: "PIG * FISH = DOG * COW"
-                        solution:
+                        solutions:
                           - C: 4
                             D: 6
                             F: 2
@@ -356,7 +358,7 @@ paths:
                         timeCount: 0.189
                         nodeCount: 5486
                       - equation: "COW * FISH = DOG * PIG"
-                        solution:
+                        solutions:
                           - C: 1
                             D: 4
                             F: 2
