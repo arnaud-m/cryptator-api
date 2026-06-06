@@ -422,6 +422,38 @@ paths:
                       description: Maximum sum for doubly true cryptarithms (maxsum >= minsum)
                       example: 50
                       minimum: 1
+            examples:
+              1solution:
+                summary: 1 solution
+                value:
+                  min: 3
+                  max: -1
+                  right: "FREE"
+                  type: "MUL"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 1
+                  maxsum: 50
+              2solutions:
+                summary: 2 solutions
+                value:
+                  min: 2
+                  max: 5
+                  right: "FREE"
+                  type: "ADD"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 45
+                  maxsum: 50
+              noSoluce:
+                summary: No solution
+                value:
+                  right: "UNIQUE"
+                  type: "ADD"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 1
+                  maxsum: 50
       responses:
         '200':
           description: Generated doubly true cryptarithms
@@ -429,6 +461,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenerateResults'
+              examples:
+                1solution:
+                  summary: 1 solution
+                  value:
+                    cryptarithms:
+                      - equation: "FOUR * FIVE = ONE * TWO * TEN"
+                        solutions:
+                          - E: 8
+                            F: 3
+                            I: 0
+                            N: 7
+                            O: 2
+                            R: 4
+                            T: 1
+                            U: 6
+                            V: 5
+                            W: 9
+                        timeCount: 3.442
+                        nodeCount: 18144
+                    timeCount: 24.580
+                    nodeCount: 6790
+                    candidateCount: 41
+                2solutions:
+                  summary: 2 solutions
+                  value:
+                    cryptarithms:
+                      - equation: "FOUR + FORTYONE = ONE + FOURTEEN + THIRTY"
+                        solutions:
+                          - E: 7
+                            F: 4
+                            H: 9
+                            I: 6
+                            N: 8
+                            O: 1
+                            R: 3
+                            T: 2
+                            U: 0
+                            Y: 5
+                        timeCount: 0.298
+                        nodeCount: 5631
+                      - equation: "TWENTY + TWENTYFIVE = SEVEN + NINE + TWENTYNINE"
+                        solutions:
+                          - E: 8
+                            F: 4
+                            I: 3
+                            N: 7
+                            S: 9
+                            T: 1
+                            V: 2
+                            W: 0
+                            Y: 5
+                        timeCount: 0.095
+                        nodeCount: 245
+                    timeCount: 6.931
+                    nodeCount: 80562
+                    candidateCount: 1323
+                noSoluce:
+                  summary: No solution
+                  value:
+                    cryptarithms: []
+                    timeCount: 2.658
+                    nodeCount: 21460
+                    candidateCount: 658
         '400':
           description: Invalid request
         '500':
