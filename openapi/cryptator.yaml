@@ -28,8 +28,9 @@ components:
           minimum: 3
         max:
           type: integer
-          default: -1
-          description: Maximum number of words (max >= min, or max = -1 unlimited)
+          nullable: true
+          default: null
+          description: Maximum number of words (max >= min, or max = null unlimited)
         right:
           type: string
           enum: [FREE, UNIQUE, FIXED]
@@ -73,9 +74,10 @@ components:
                     items:
                       type: object
                       additionalProperties:
-                        type: integer
-                        minimum: 0
-                        maximum: 35
+                          type: integer
+                          description: Map of symbols (single-character keys) to digit values.
+                          minimum: 0
+                          maximum: 35
                     example:
                       - S: 9
                         E: 5
@@ -136,7 +138,7 @@ paths:
                         description: Optional integer domains of letters
                         additionalProperties:
                           type: string
-                        pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
+                          pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
                     required:
                       - equation
             examples:
@@ -242,7 +244,8 @@ paths:
                       items:
                         type: string
                         pattern: "^[^\\s]+$"
-                      description: List of words to generate cryptarithms.
+                      description: |
+                        List of words to generate cryptarithms.
                         Each word may contain any characters except spaces.
                       minItems:  3
             examples:
@@ -250,7 +253,7 @@ paths:
                 summary: Money
                 value:
                   min: 3
-                  max: -1
+                  max: null
                   right: "UNIQUE"
                   type: "ADD"
                   words: ["SEND", "MORE", "MONEY"]
@@ -427,7 +430,7 @@ paths:
                 summary: 1 solution
                 value:
                   min: 3
-                  max: -1
+                  max: null
                   right: "FREE"
                   type: "MUL"
                   ctry: "EN"
