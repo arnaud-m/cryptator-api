@@ -108,7 +108,7 @@ components:
           properties:
             candidateCount:
               type: integer
-              description: "Number of candidate cryptarithms"
+              description: "Number of candidate cryptarithms generated before solving"
               example: 3
               minimum: 0
 
@@ -405,12 +405,14 @@ paths:
                       example: "EN"
                       minLength:  2
                       maxLength: 2
+                      pattern: "^[A-Za-z]{2}$"
                     lang:
                       type: string
                       description: Language code for written-out number
                       example: "en"
                       minLength:  2
                       maxLength: 2
+                      pattern: "^[A-Za-z]{2}$"
                     minsum:
                       type: integer
                       description: Minimum sum for doubly true cryptarithms
@@ -422,19 +424,7 @@ paths:
                       example: 50
                       minimum: 1
             examples:
-              1solution:
-                summary: 1 solution
-                value:
-                  min: 3
-                  max: null
-                  right: "FREE"
-                  type: "MUL"
-                  ctry: "EN"
-                  lang: "en"
-                  minsum: 1
-                  maxsum: 50
-              2solutions:
-                summary: 2 solutions
+              genN-add-basic-sol2:
                 value:
                   min: 2
                   max: 5
@@ -444,8 +434,7 @@ paths:
                   lang: "en"
                   minsum: 45
                   maxsum: 50
-              noSoluce:
-                summary: No solution
+              genN-add-basic-sol0:
                 value:
                   right: "UNIQUE"
                   type: "ADD"
@@ -453,6 +442,17 @@ paths:
                   lang: "en"
                   minsum: 1
                   maxsum: 50
+              genN-mul-basic-sol1:
+                value:
+                  min: 3
+                  max: null
+                  right: "FREE"
+                  type: "MUL"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 1
+                  maxsum: 50
+
       responses:
         '200':
           description: Generated doubly true cryptarithms
@@ -461,29 +461,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenerateResults'
               examples:
-                1solution:
-                  summary: 1 solution
-                  value:
-                    cryptarithms:
-                      - equation: "FOUR * FIVE = ONE * TWO * TEN"
-                        solutions:
-                          - E: 8
-                            F: 3
-                            I: 0
-                            N: 7
-                            O: 2
-                            R: 4
-                            T: 1
-                            U: 6
-                            V: 5
-                            W: 9
-                        timeCount: 3.442
-                        nodeCount: 18144
-                    timeCount: 24.580
-                    nodeCount: 6790
-                    candidateCount: 41
-                2solutions:
-                  summary: 2 solutions
+                genN-add-basic-sol2:
                   value:
                     cryptarithms:
                       - equation: "FOUR + FORTYONE = ONE + FOURTEEN + THIRTY"
@@ -516,13 +494,32 @@ paths:
                     timeCount: 6.931
                     nodeCount: 80562
                     candidateCount: 1323
-                noSoluce:
-                  summary: No solution
+                genN-add-basic-sol0:
                   value:
                     cryptarithms: []
                     timeCount: 2.658
                     nodeCount: 21460
                     candidateCount: 658
+                genN-mul-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "FOUR * FIVE = ONE * TWO * TEN"
+                        solutions:
+                          - E: 8
+                            F: 3
+                            I: 0
+                            N: 7
+                            O: 2
+                            R: 4
+                            T: 1
+                            U: 6
+                            V: 5
+                            W: 9
+                        timeCount: 3.442
+                        nodeCount: 18144
+                    timeCount: 24.580
+                    nodeCount: 6790
+                    candidateCount: 41
         '400':
           description: Invalid request
         '500':
