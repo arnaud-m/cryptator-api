@@ -56,6 +56,8 @@ components:
           minimum: 0
     CryptarithmResults:
       type: object
+      required:
+        - cryptarithms
       properties:
         cryptarithms:
           type: array
@@ -63,6 +65,9 @@ components:
           items:
             allOf:
               - type: object
+                required:
+                  - equation
+                  - solutions
                 properties:
                   equation:
                     type: string
@@ -123,6 +128,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - cryptarithms
               properties:
                 cryptarithms:
                   type: array
