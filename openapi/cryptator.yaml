@@ -138,10 +138,6 @@ paths:
                     description: Cryptarithm equation
                     default: "SEND + MORE = MONEY"
             examples:
-              solve-add-basic-sol0:
-                value:
-                  equations:
-                    - "NULL = NO + SOLUTION"
               solve-add-basic-sol1:
                 value:
                   equations:
@@ -150,6 +146,10 @@ paths:
                 value:
                   equations:
                     - "EARTH + MARS + URANUS = SATURN"
+              solve-add-basic-sol0:
+                value:
+                  equations:
+                    - "NULL = NO + SOLUTION"
               solve-mul-basic-sol1:
                 value:
                   equations:
@@ -162,13 +162,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/CryptarithmResults'
               examples:
-                solve-add-basic-sol0:
-                  value:
-                    cryptarithms:
-                      - equation: "NULL = NO + SOLUTION"
-                        solutions: []
-                        timeCount: 0.08
-                        nodeCount: 0
                 solve-add-basic-sol1:
                   value:
                     cryptarithms:
@@ -209,6 +202,13 @@ paths:
                             U: 2
                         timeCount: 0.165
                         nodeCount: 21690
+                solve-add-basic-sol0:
+                  value:
+                    cryptarithms:
+                      - equation: "NULL = NO + SOLUTION"
+                        solutions: []
+                        timeCount: 0.08
+                        nodeCount: 0
                 solve-mul-basic-sol1:
                   value:
                     cryptarithms:
@@ -254,35 +254,30 @@ paths:
                         Each word may contain any characters except spaces.
                       minItems:  3
             examples:
-              sendMoreMoney:
-                summary: Money
+              genW-add-basic-sol1:
                 value:
                   min: 3
                   max: null
                   right: "UNIQUE"
                   type: "ADD"
                   words: ["SEND", "MORE", "MONEY"]
-              planets:
-                summary: Planets
+              genW-add-basic-sol2:
                 value:
                   min: 4
                   max: 5
                   right: "UNIQUE"
                   type: "ADD"
                   words: ["MERCURY", "VENUS", "EARTH", "MARS", "SATURN", "URANUS"]
-              multiplication:
-                summary: Multiplication
-                value:
-                  right: "FREE"
-                  type: "MUL"
-                  words: ["CAT", "DOG", "COW", "PIG", "FISH"]
-              noSoluce:
-                summary: No Solution
+              genW-add-basic-sol0:
                 value:
                   right: "FREE"
                   type: "ADD"
                   words: ["ONE", "TWO", "THREE"]
-
+              genW-mul-basic-sol2:
+                value:
+                  right: "FREE"
+                  type: "MUL"
+                  words: ["CAT", "DOG", "COW", "PIG", "FISH"]
 
       responses:
         '200':
@@ -292,8 +287,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenerateResults'
               examples:
-                sendMoreMoney:
-                  summary: Money
+                genW-add-basic-sol1:
                   value:
                     cryptarithms:
                       - equation: "SEND + MORE = MONEY"
@@ -312,8 +306,7 @@ paths:
                     timeCount: 0.03
                     nodeCount: 4
                     candidateCount: 1
-                planets:
-                  summary: Planets
+                genW-add-basic-sol2:
                   value:
                     cryptarithms:
                       - equation: "VENUS + EARTH + URANUS = SATURN"
@@ -346,8 +339,13 @@ paths:
                     timeCount: 0.544
                     nodeCount: 24
                     candidateCount: 12
-                multiplication:
-                  summary: Multiplication
+                genW-add-basic-sol0:
+                  value:
+                    cryptarithms: []
+                    timeCount: 0.010
+                    nodeCount: 0
+                    candidateCount: 0
+                genW-mul-basic-sol2:
                   value:
                     cryptarithms:
                       - equation: "PIG * FISH = DOG * COW"
@@ -381,13 +379,6 @@ paths:
                     timeCount: 0.405
                     nodeCount: 48
                     candidateCount: 6
-                noSoluce:
-                  summary: No Solution
-                  value:
-                    cryptarithms: []
-                    timeCount: 0.010
-                    nodeCount: 0
-                    candidateCount: 0
         '400':
           description: Invalid request
         '500':
