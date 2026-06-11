@@ -138,21 +138,22 @@ paths:
                     description: Cryptarithm equation
                     default: "SEND + MORE = MONEY"
             examples:
-              noSoluce:
-                summary: NULL = NO + SOLUTION
+              solve-add-basic-sol0:
                 value:
                   equations:
                     - "NULL = NO + SOLUTION"
-              sendMoreMoney:
-                summary: SEND + MORE = MONEY
+              solve-add-basic-sol1:
                 value:
                   equations:
                     - "SEND + MORE = MONEY"
-              planets:
-                summary: EARTH + MARS + URANUS = SATURN
+              solve-add-basic-sol2:
                 value:
                   equations:
                     - "EARTH + MARS + URANUS = SATURN"
+              solve-mul-basic-sol1:
+                value:
+                  equations:
+                    - "CHI * PSI = SIGMA"
       responses:
         '200':
           description: Results for each cryptarithm
@@ -161,16 +162,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/CryptarithmResults'
               examples:
-                noSoluce:
-                  summary: Result for NULL = NO + SOLUTION
+                solve-add-basic-sol0:
                   value:
                     cryptarithms:
                       - equation: "NULL = NO + SOLUTION"
                         solutions: []
                         timeCount: 0.08
                         nodeCount: 0
-                sendMoreMoney:
-                  summary: Result for SEND + MORE = MONEY
+                solve-add-basic-sol1:
                   value:
                     cryptarithms:
                       - equation: "SEND + MORE = MONEY"
@@ -185,8 +184,7 @@ paths:
                             Y: 2
                         timeCount: 0.03
                         nodeCount: 4
-                planets:
-                  summary: Results for EARTH + MARS + URANUS = SATURN
+                solve-add-basic-sol2:
                   value:
                     cryptarithms:
                       - equation: "EARTH + MARS + URANUS = SATURN"
@@ -211,6 +209,20 @@ paths:
                             U: 2
                         timeCount: 0.165
                         nodeCount: 21690
+                solve-mul-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "CHI * PSI = SIGMA"
+                        solutions:
+                          - A: 6
+                            C: 1
+                            H: 3
+                            I: 4
+                            L: 7
+                            P: 5
+                            S: 0
+                        timeCount: 0.115
+                        nodeCount: 1156
         '400':
           description: Invalid request (e.g., missing cryptarithms)
         '500':
