@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Cryptator API
   version: 1.0.0
-  description: Cryptator API is a REST API built on top of the constraint-based cryptarithm solver Cryptsator (https://github.com/arnaud-m/cryptator/).
+  description: Cryptator API is a REST API built on top of the constraint-based cryptarithm solver Cryptator (https://github.com/arnaud-m/cryptator/).
 
 components:
   parameters:
@@ -119,7 +119,6 @@ paths:
       description: |
         Solves cryptarithms using Cryptator.
         The base is passed as query parameter.
-        Cryptarithms with optional domains are passed in the request body.
       parameters:
         - $ref: '#/components/parameters/BaseParam'
       requestBody:
@@ -133,19 +132,13 @@ paths:
               properties:
                 cryptarithms:
                   type: array
-                  description: List of cryptarithms to solve, each with optional domains
+                  description: List of cryptarithms to solve
                   items:
                     type: object
                     properties:
                       equation:
                         type: string
                         description: Cryptarithm equation
-                      domains:
-                        type: object
-                        description: Optional integer domains of letters
-                        additionalProperties:
-                          type: string
-                          pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
                     required:
                       - equation
             examples:
@@ -159,9 +152,6 @@ paths:
                 value:
                   cryptarithms:
                     - equation: "SEND + MORE = MONEY"
-                      domains:
-                        S: "9"
-                        E: "1-5"
               planets:
                 summary: EARTH + MARS + URANUS = SATURN
                 value:
