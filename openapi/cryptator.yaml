@@ -80,7 +80,7 @@ components:
                       type: object
                       additionalProperties:
                           type: integer
-                          description: Map of symbols (single-character keys) to digit values.
+                          description: Map of symbols (single-character keys) to digit values
                           minimum: 0
                           maximum: 35
                     example:
@@ -128,35 +128,31 @@ paths:
             schema:
               type: object
               required:
-                - cryptarithms
+                - equations
               properties:
-                cryptarithms:
+                equations:
                   type: array
                   description: List of cryptarithms to solve
                   items:
-                    type: object
-                    properties:
-                      equation:
-                        type: string
-                        description: Cryptarithm equation
-                    required:
-                      - equation
+                    type: string
+                    description: Cryptarithm equation
+                    default: "SEND + MORE = MONEY"
             examples:
               noSoluce:
                 summary: NULL = NO + SOLUTION
                 value:
-                  cryptarithms:
-                    - equation: "NULL = NO + SOLUTION"
+                  equations:
+                    - "NULL = NO + SOLUTION"
               sendMoreMoney:
                 summary: SEND + MORE = MONEY
                 value:
-                  cryptarithms:
-                    - equation: "SEND + MORE = MONEY"
+                  equations:
+                    - "SEND + MORE = MONEY"
               planets:
                 summary: EARTH + MARS + URANUS = SATURN
                 value:
-                  cryptarithms:
-                    - equation: "EARTH + MARS + URANUS = SATURN"
+                  equations:
+                    - "EARTH + MARS + URANUS = SATURN"
       responses:
         '200':
           description: Results for each cryptarithm
