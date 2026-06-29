@@ -110,6 +110,7 @@ components:
 paths:
   /solve:
     post:
+      operationId: solve
       summary: Solve cryptarithms
       description: |
         Solves cryptarithms using Cryptator.
@@ -225,6 +226,7 @@ paths:
 
   /generate/words:
     post:
+      operationId: generateWords
       summary: Generate cryptarithms
       description: Generate cryptarithms from a list of words
       parameters:
@@ -381,6 +383,7 @@ paths:
 
   /generate/numbers:
     post:
+      operationId: generateNumbers
       summary: Generate doubly true cryptarithms
       description: Generate doubly true cryptarithms with written-out numbers
       parameters:
