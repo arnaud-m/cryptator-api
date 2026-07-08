@@ -11,12 +11,12 @@ package cryptator.api.service;
 import org.springframework.stereotype.Service;
 
 import cryptator.openapi.model.CryptarithmResults;
-import cryptator.openapi.model.SolvePostRequest;
+import cryptator.openapi.model.SolveRequest;
 
 @Service
 public class CryptatorService {
 
-	 public CryptarithmResults solve(SolvePostRequest request) {
+	 public CryptarithmResults solve(SolveRequest request) {
 
 	        // TODO: appel réel vers ton module cryptator (ANTLR)
 	        CryptarithmResults result = new CryptarithmResults();

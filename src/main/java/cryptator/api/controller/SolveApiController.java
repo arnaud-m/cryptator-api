@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cryptator.api.service.SolveService;
 import cryptator.openapi.api.SolveApi;
 import cryptator.openapi.model.CryptarithmResults;
-import cryptator.openapi.model.SolvePostRequest;
+import cryptator.openapi.model.SolveRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @RestController
 public class SolveApiController implements SolveApi {
@@ -26,8 +29,9 @@ public class SolveApiController implements SolveApi {
 	}
 
 	@Override
-	public ResponseEntity<CryptarithmResults> solvePost(SolvePostRequest solvePostRequest, Integer base) {
-		CryptarithmResults result = solveService.solve(solvePostRequest).join();
+	public ResponseEntity<CryptarithmResults> solve(@Valid SolveRequest solveRequest,
+			@Min(2) @Max(36) @Valid Integer base) {
+		CryptarithmResults result = solveService.solve(solveRequest).join();
 		return ResponseEntity.ok(result);
 	}
 
