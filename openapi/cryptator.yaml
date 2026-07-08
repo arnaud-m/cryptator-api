@@ -20,6 +20,7 @@ components:
   schemas:
     GenerateOptions:
       type: object
+      additionalProperties: false
       properties:
         min:
           type: integer
@@ -28,14 +29,12 @@ components:
           minimum: 3
         max:
           type: integer
-          nullable: true
-          default: null
-          description: Maximum number of words (max >= min, or max = null unlimited)
+          description: Maximum number of words (max >= min, or omitted when unlimited)
         right:
           type: string
           enum: [FREE, UNIQUE, FIXED]
           default: UNIQUE
-          description: Right member type
+          description: Type of right-hand side constraint
         type:
           type: string
           enum: [ADD, MUL]
@@ -128,9 +127,11 @@ paths:
               type: object
               required:
                 - equations
+              additionalProperties: false
               properties:
                 equations:
                   type: array
+                  minItems: 1
                   description: List of cryptarithms to solve
                   items:
                     type: string
@@ -404,6 +405,7 @@ paths:
                       type: string
                       description: Country code for written-out numbers
                       example: "EN"
+                      default: "EN"
                       minLength:  2
                       maxLength: 2
                       pattern: "^[A-Za-z]{2}$"
@@ -411,6 +413,7 @@ paths:
                       type: string
                       description: Language code for written-out number
                       example: "en"
+                      default: "en"
                       minLength:  2
                       maxLength: 2
                       pattern: "^[A-Za-z]{2}$"
