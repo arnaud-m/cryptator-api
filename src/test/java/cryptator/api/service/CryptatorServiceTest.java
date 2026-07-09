@@ -1,3 +1,11 @@
+/*
+ * This file is part of cryptator-api, https://github.com/arnaud-m/cryptator-api
+ *
+ * Copyright (c) 2026-2026, Université Côte d'Azur. All rights reserved.
+ *
+ * Licensed under the BSD 3-clause license.
+ * See LICENSE file in the project root for full license information.
+ */
 package cryptator.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +28,9 @@ public class CryptatorServiceTest {
         request.addEquationsItem("SEND + MORE = MONEY");
         CryptarithmResults result = cryptatorService.solve(request);
 
-        assertNotNull("Le résultat ne doit pas être null", result);
+        assertNotNull("Result must not be null", result);
         boolean isEmpty = (result.getCryptarithms() == null) || result.getCryptarithms().isEmpty();
-        assertTrue("Le résultat est censé être vide", isEmpty);
+        assertTrue("Result is expected to be empty", isEmpty);
     }
 
     @Test
@@ -31,13 +39,13 @@ public class CryptatorServiceTest {
         ObjectMapper objectMapper = new ObjectMapper();
         InputStream inputStream = getClass().getResourceAsStream("/solve-valid-examples.json");
 
-        assertNotNull("JSON introuvable", inputStream);
+        assertNotNull("JSON file not found", inputStream);
 
         SolveRequest request2 = objectMapper.readValue(inputStream, SolveRequest.class);
         CryptarithmResults result2 = cryptatorService2.solve(request2);
 
-        assertNotNull("Le résultat ne doit pas être null", result2);
+        assertNotNull("Result must not be null", result2);
         boolean isEmpty2 = (result2.getCryptarithms() == null) || result2.getCryptarithms().isEmpty();
-        assertTrue("Le résultat est censé être vide", isEmpty2);
+        assertTrue("Result is expected to be empty", isEmpty2);
     }
 }
