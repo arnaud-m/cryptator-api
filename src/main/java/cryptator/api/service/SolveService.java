@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import cryptator.openapi.model.CryptarithmResults;
-import cryptator.openapi.model.SolvePostRequest;
+import cryptator.openapi.model.SolveRequest;
 
 @Service
 public class SolveService {
@@ -29,7 +29,7 @@ public class SolveService {
         this.cryptatorService = cryptatorService;
     }
 
-    public CompletableFuture<CryptarithmResults> solve(SolvePostRequest request) {
+    public CompletableFuture<CryptarithmResults> solve(SolveRequest request) {
 
         return CompletableFuture.supplyAsync(() -> 
             cryptatorService.solve(request),

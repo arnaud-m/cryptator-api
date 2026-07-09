@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Cryptator API
   version: 1.0.0
-  description: Cryptator API is a REST API built on top of the constraint-based cryptarithm solver Cryptsator (https://github.com/arnaud-m/cryptator/).
+  description: Cryptator API is a REST API built on top of the constraint-based cryptarithm solver Cryptator (https://github.com/arnaud-m/cryptator/).
 
 components:
   parameters:
@@ -20,6 +20,7 @@ components:
   schemas:
     GenerateOptions:
       type: object
+      additionalProperties: false
       properties:
         min:
           type: integer
@@ -28,15 +29,69 @@ components:
           minimum: 3
         max:
           type: integer
-          default: -1
-          description: Maximum number of words (max >= min, or max = -1 unlimited)
+          description: Maximum number of words (max >= min, or omitted when unlimited)
         right:
           type: string
           enum: [FREE, UNIQUE, FIXED]
           default: UNIQUE
-          description: Right member type
-    SearchMeasures:
+          description: Type of right-hand side constraint
+        type:
+          type: string
+          enum: [ADD, MUL]
+          default: ADD
+          description: Operation type used by the generator to build cryptarithms
+
+    CryptarithmResults:
       type: object
+      required:
+        - cryptarithms
+      properties:
+        cryptarithms:
+          type: array
+          description: Array of results, one per cryptarithm
+          items:
+            type: object
+            required:
+              - equation
+              - solutions
+            properties:
+              equation:
+                type: string
+                description: Cryptarithm equation
+                example: "SEND + MORE = MONEY"
+              solutions:
+                type: array
+                description: List of solutions
+                items:
+                  type: object
+                  additionalProperties:
+                    type: integer
+                    description: Map of symbols (single-character keys) to digit values
+                    minimum: 0
+                    maximum: 35
+                example:
+                  - S: 9
+                    E: 5
+                    N: 6
+                    D: 7
+                    M: 1
+                    O: 0
+                    R: 8
+                    Y: 2
+              timeCount:
+                type: number
+                description: Execution time in seconds
+                example: 0.03
+                minimum:  0
+              nodeCount:
+                type: integer
+                description: Number of tree search nodes
+                example: 4
+                minimum: 0
+
+    GenerateResults:
+      allOf:
+        - $ref: '#/components/schemas/CryptarithmResults'
       properties:
         timeCount:
           type: number
@@ -48,91 +103,57 @@ components:
           description: Number of tree search nodes
           example: 4
           minimum: 0
-    CryptarithmResults:
-      type: object
-      properties:
-        cryptarithms:
-          type: array
-          description: Array of results, one per cryptarithm
-          items:
-            allOf:
-              - type: object
-                properties:
-                  equation:
-                    type: string
-                    description: Cryptarithm equation
-                    example: "SEND + MORE = MONEY"
-                  solutions:
-                    type: array
-                    description: List of solutions
-                    items:
-                      type: object
-                      additionalProperties:
-                          type: integer
-                          minimum: 0
-                          maximum: 35
-                    example:
-                      - S: 9
-                        E: 5
-                        N: 6
-                        D: 7
-                        M: 1
-                        O: 0
-                        R: 8
-                        Y: 2
-              - $ref: '#/components/schemas/SearchMeasures'
-    GenerateResults:
-      type: object
-      allOf:
-          - $ref: '#/components/schemas/CryptarithmResults'
-          - $ref: '#/components/schemas/SearchMeasures'
-          - type:  object
-            properties:
-              candidateCount:
-                type: integer
-                description: "Number of candidate cryptarithms"
-                example: 3
-                minimum: 0
+        candidateCount:
+          type: integer
+          description: "Number of candidate cryptarithms generated before solving"
+          example: 3
+          minimum: 0
 
 paths:
   /solve:
     post:
+      operationId: solve
       summary: Solve cryptarithms
       description: |
         Solves cryptarithms using Cryptator.
         The base is passed as query parameter.
-        Cryptarithms with optional domains are passed in the request body.
       parameters:
-         - $ref: '#/components/parameters/BaseParam'
+        - $ref: '#/components/parameters/BaseParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - equations
+              additionalProperties: false
               properties:
-                cryptarithms:
+                equations:
                   type: array
-                  description: List of cryptarithms to solve, each with optional domains
+                  minItems: 1
+                  description: List of cryptarithms to solve
                   items:
-                    type: object
-                    properties:
-                      equation:
-                        type: string
-                        description: Cryptarithm equation
-                        example: "SEND + MORE = MONEY"
-                      domains:
-                        type: object
-                        description: Optional integer domains of letters
-                        additionalProperties:
-                          type: string
-                        example:
-                          S: "9"
-                          E: "1-5"
-                        pattern: "^\\d+(-\\d+)?(, *\\d+(-\\d+)?)*$"
-                    required:
-                      - equation
-
+                    type: string
+                    description: Cryptarithm equation
+                    default: "SEND + MORE = MONEY"
+            examples:
+              solve-add-basic-sol1:
+                value:
+                  equations:
+                    - "SEND + MORE = MONEY"
+              solve-add-basic-sol2:
+                value:
+                  equations:
+                    - "EARTH + MARS + URANUS = SATURN"
+              solve-add-basic-sol0:
+                value:
+                  equations:
+                    - "NULL = NO + SOLUTION"
+              solve-mul-basic-sol1:
+                value:
+                  equations:
+                    - "CHI * PSI = SIGMA"
       responses:
         '200':
           description: Results for each cryptarithm
@@ -140,6 +161,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CryptarithmResults'
+              examples:
+                solve-add-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "SEND + MORE = MONEY"
+                        solutions:
+                          - S: 9
+                            E: 5
+                            N: 6
+                            D: 7
+                            M: 1
+                            O: 0
+                            R: 8
+                            Y: 2
+                        timeCount: 0.03
+                        nodeCount: 4
+                solve-add-basic-sol2:
+                  value:
+                    cryptarithms:
+                      - equation: "EARTH + MARS + URANUS = SATURN"
+                        solutions:
+                          - A: 2
+                            E: 7
+                            H: 3
+                            M: 6
+                            N: 1
+                            R: 4
+                            S: 9
+                            T: 0
+                            U: 8
+                          - A: 1
+                            E: 7
+                            H: 0
+                            M: 5
+                            N: 6
+                            R: 4
+                            S: 3
+                            T: 8
+                            U: 2
+                        timeCount: 0.165
+                        nodeCount: 21690
+                solve-add-basic-sol0:
+                  value:
+                    cryptarithms:
+                      - equation: "NULL = NO + SOLUTION"
+                        solutions: []
+                        timeCount: 0.08
+                        nodeCount: 0
+                solve-mul-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "CHI * PSI = SIGMA"
+                        solutions:
+                          - A: 6
+                            C: 1
+                            H: 3
+                            I: 4
+                            L: 7
+                            P: 5
+                            S: 0
+                        timeCount: 0.115
+                        nodeCount: 1156
         '400':
           description: Invalid request (e.g., missing cryptarithms)
         '500':
@@ -147,6 +230,7 @@ paths:
 
   /generate/words:
     post:
+      operationId: generateWords
       summary: Generate cryptarithms
       description: Generate cryptarithms from a list of words
       parameters:
@@ -166,10 +250,36 @@ paths:
                       items:
                         type: string
                         pattern: "^[^\\s]+$"
-                      description: List of words to generate cryptarithms.
+                      description: |
+                        List of words to generate cryptarithms.
                         Each word may contain any characters except spaces.
-                      example: ["SEND", "MORE", "MONEY"]
                       minItems:  3
+            examples:
+              genW-add-basic-sol1:
+                value:
+                  min: 3
+                  max: null
+                  right: "UNIQUE"
+                  type: "ADD"
+                  words: ["SEND", "MORE", "MONEY"]
+              genW-add-basic-sol2:
+                value:
+                  min: 4
+                  max: 5
+                  right: "UNIQUE"
+                  type: "ADD"
+                  words: ["MERCURY", "VENUS", "EARTH", "MARS", "SATURN", "URANUS"]
+              genW-add-basic-sol0:
+                value:
+                  right: "FREE"
+                  type: "ADD"
+                  words: ["ONE", "TWO", "THREE"]
+              genW-mul-basic-sol2:
+                value:
+                  right: "FREE"
+                  type: "MUL"
+                  words: ["CAT", "DOG", "COW", "PIG", "FISH"]
+
       responses:
         '200':
           description: Generated cryptarithms
@@ -177,6 +287,99 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenerateResults'
+              examples:
+                genW-add-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "SEND + MORE = MONEY"
+                        solutions:
+                          - S: 9
+                            E: 5
+                            N: 6
+                            D: 7
+                            M: 1
+                            O: 0
+                            R: 8
+                            Y: 2
+                        timeCount: 0.03
+                        nodeCount: 4
+                        firstSolutionNodeCount: 4
+                    timeCount: 0.03
+                    nodeCount: 4
+                    candidateCount: 1
+                genW-add-basic-sol2:
+                  value:
+                    cryptarithms:
+                      - equation: "VENUS + EARTH + URANUS = SATURN"
+                        solutions:
+                          - A: 2
+                            E: 7
+                            H: 4
+                            N: 0
+                            R: 5
+                            S: 8
+                            T: 1
+                            U: 6
+                            V: 9
+                        timeCount: 0.153
+                        nodeCount: 3244
+                      - equation: "MARS + SATURN + URANUS = MERCURY"
+                        solutions:
+                          - A: 9
+                            C: 6
+                            E: 2
+                            M: 1
+                            N: 0
+                            R: 3
+                            S: 4
+                            T: 5
+                            U: 7
+                            Y: 8
+                        timeCount: 0.043
+                        nodeCount: 408
+                    timeCount: 0.544
+                    nodeCount: 24
+                    candidateCount: 12
+                genW-add-basic-sol0:
+                  value:
+                    cryptarithms: []
+                    timeCount: 0.010
+                    nodeCount: 0
+                    candidateCount: 0
+                genW-mul-basic-sol2:
+                  value:
+                    cryptarithms:
+                      - equation: "PIG * FISH = DOG * COW"
+                        solutions:
+                          - C: 4
+                            D: 6
+                            F: 2
+                            G: 5
+                            H: 0
+                            I: 3
+                            O: 7
+                            P: 1
+                            S: 9
+                            W: 8
+                        timeCount: 0.189
+                        nodeCount: 5486
+                      - equation: "COW * FISH = DOG * PIG"
+                        solutions:
+                          - C: 1
+                            D: 4
+                            F: 2
+                            G: 9
+                            H: 7
+                            I: 6
+                            O: 5
+                            P: 8
+                            S: 0
+                            W: 3
+                        timeCount: 0.188
+                        nodeCount: 4700
+                    timeCount: 0.405
+                    nodeCount: 48
+                    candidateCount: 6
         '400':
           description: Invalid request
         '500':
@@ -184,6 +387,7 @@ paths:
 
   /generate/numbers:
     post:
+      operationId: generateNumbers
       summary: Generate doubly true cryptarithms
       description: Generate doubly true cryptarithms with written-out numbers
       parameters:
@@ -201,14 +405,18 @@ paths:
                       type: string
                       description: Country code for written-out numbers
                       example: "EN"
+                      default: "EN"
                       minLength:  2
                       maxLength: 2
+                      pattern: "^[A-Za-z]{2}$"
                     lang:
                       type: string
                       description: Language code for written-out number
                       example: "en"
+                      default: "en"
                       minLength:  2
                       maxLength: 2
+                      pattern: "^[A-Za-z]{2}$"
                     minsum:
                       type: integer
                       description: Minimum sum for doubly true cryptarithms
@@ -219,13 +427,103 @@ paths:
                       description: Maximum sum for doubly true cryptarithms (maxsum >= minsum)
                       example: 50
                       minimum: 1
+            examples:
+              genN-add-basic-sol2:
+                value:
+                  min: 2
+                  max: 5
+                  right: "FREE"
+                  type: "ADD"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 45
+                  maxsum: 50
+              genN-add-basic-sol0:
+                value:
+                  right: "UNIQUE"
+                  type: "ADD"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 1
+                  maxsum: 50
+              genN-mul-basic-sol1:
+                value:
+                  min: 3
+                  max: null
+                  right: "FREE"
+                  type: "MUL"
+                  ctry: "EN"
+                  lang: "en"
+                  minsum: 1
+                  maxsum: 50
+
       responses:
         '200':
           description: Generated doubly true cryptarithms
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/GenerateResults'
+                $ref: '#/components/schemas/GenerateResults'
+              examples:
+                genN-add-basic-sol2:
+                  value:
+                    cryptarithms:
+                      - equation: "FOUR + FORTYONE = ONE + FOURTEEN + THIRTY"
+                        solutions:
+                          - E: 7
+                            F: 4
+                            H: 9
+                            I: 6
+                            N: 8
+                            O: 1
+                            R: 3
+                            T: 2
+                            U: 0
+                            Y: 5
+                        timeCount: 0.298
+                        nodeCount: 5631
+                      - equation: "TWENTY + TWENTYFIVE = SEVEN + NINE + TWENTYNINE"
+                        solutions:
+                          - E: 8
+                            F: 4
+                            I: 3
+                            N: 7
+                            S: 9
+                            T: 1
+                            V: 2
+                            W: 0
+                            Y: 5
+                        timeCount: 0.095
+                        nodeCount: 245
+                    timeCount: 6.931
+                    nodeCount: 80562
+                    candidateCount: 1323
+                genN-add-basic-sol0:
+                  value:
+                    cryptarithms: []
+                    timeCount: 2.658
+                    nodeCount: 21460
+                    candidateCount: 658
+                genN-mul-basic-sol1:
+                  value:
+                    cryptarithms:
+                      - equation: "FOUR * FIVE = ONE * TWO * TEN"
+                        solutions:
+                          - E: 8
+                            F: 3
+                            I: 0
+                            N: 7
+                            O: 2
+                            R: 4
+                            T: 1
+                            U: 6
+                            V: 5
+                            W: 9
+                        timeCount: 3.442
+                        nodeCount: 18144
+                    timeCount: 24.580
+                    nodeCount: 6790
+                    candidateCount: 41
         '400':
           description: Invalid request
         '500':
