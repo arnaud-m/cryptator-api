@@ -31,6 +31,7 @@ public class SolveApiController implements SolveApi {
 	@Override
 	public ResponseEntity<CryptarithmResults> solve(@Valid SolveRequest solveRequest,
 			@Min(2) @Max(36) @Valid Integer base) {
+		// FIXME: Pass the base parameter to the SolveService once the method signature is updated.
 		CryptarithmResults result = solveService.solve(solveRequest).join();
 		return ResponseEntity.ok(result);
 	}
