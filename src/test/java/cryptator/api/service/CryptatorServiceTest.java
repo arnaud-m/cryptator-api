@@ -8,44 +8,47 @@
  */
 package cryptator.api.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cryptator.openapi.model.CryptarithmResults;
-import cryptator.openapi.model.SolveRequest;
-import org.junit.Test;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CryptatorServiceTest {
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cryptator.openapi.model.CryptarithmResults;
+import cryptator.openapi.model.SolveRequest;
+
+class CryptatorServiceTest {
 
     @Test
-    public void solveEmptyResults() {
+    void solveEmptyResults() {
         CryptatorService cryptatorService = new CryptatorService();
         SolveRequest request = new SolveRequest();
 
         request.addEquationsItem("SEND + MORE = MONEY");
         CryptarithmResults result = cryptatorService.solve(request);
 
-        assertNotNull("Result must not be null", result);
+        assertNotNull(result, "Result must not be null");
         boolean isEmpty = (result.getCryptarithms() == null) || result.getCryptarithms().isEmpty();
-        assertTrue("Result is expected to be empty", isEmpty);
+        assertTrue(isEmpty, "Result is expected to be empty");
     }
 
     @Test
-    public void solveEmptyResultsJson() throws IOException {
+    void solveEmptyResultsJson() throws IOException {
         CryptatorService cryptatorService2 = new CryptatorService();
         ObjectMapper objectMapper = new ObjectMapper();
         InputStream inputStream = getClass().getResourceAsStream("/solve-valid-examples.json");
 
-        assertNotNull("JSON file not found", inputStream);
+        assertNotNull(inputStream, "JSON file not found");
 
         SolveRequest request2 = objectMapper.readValue(inputStream, SolveRequest.class);
         CryptarithmResults result2 = cryptatorService2.solve(request2);
 
-        assertNotNull("Result must not be null", result2);
+        assertNotNull(result2, "Result must not be null");
         boolean isEmpty2 = (result2.getCryptarithms() == null) || result2.getCryptarithms().isEmpty();
-        assertTrue("Result is expected to be empty", isEmpty2);
+        assertTrue(isEmpty2, "Result is expected to be empty");
     }
 }
