@@ -17,7 +17,7 @@
 	<groupId>fr.univ-cotedazur</groupId>
 	<artifactId>cryptator-api</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>cryptator-api</name>
 	<description>REST API for the cryptator, a cryptarithm solver</description>
 	<url>https://github.com/arnaud-m/cryptator-api</url>
